@@ -1,4 +1,3 @@
-
 import random
 import streamlit as st  
 
@@ -7,11 +6,12 @@ st.subheader("🔥 This is a NUMBER GUESSING GAME!")
 st.write("🎯 You have 5 attempts to guess a number between 50 and 100.")
 st.write("✨ Let's start the game! 🚀")
 
-# Session state to store the number and attempts
+# Session state to store the number, attempts, and guess history
 if "number_to_guess" not in st.session_state:
     st.session_state.number_to_guess = random.randint(50, 100)
     st.session_state.chances = 5
     st.session_state.guess_counter = 0
+    st.session_state.guess_list = []  # Store guesses
 
 # Input for user guess
 my_guess = st.text_input("🔢 Enter your guess:", "")
@@ -24,11 +24,13 @@ if st.button("Submit Guess"):
             st.warning("⚠️ Please enter a number between 50 and 100!")
         else:
             st.session_state.guess_counter += 1
+            st.session_state.guess_list.append(my_guess)  # Add guess to list
             
             if my_guess == st.session_state.number_to_guess:
                 st.success(f"🎉 Congrats! You guessed the number {st.session_state.number_to_guess} correctly in {st.session_state.guess_counter} attempts! 🏆")
                 st.session_state.number_to_guess = random.randint(50, 100)  # Reset game
                 st.session_state.guess_counter = 0
+                st.session_state.guess_list = []
             elif my_guess < st.session_state.number_to_guess:
                 st.info("📉 Your guess is too low! Try again.")
             else:
@@ -38,6 +40,17 @@ if st.button("Submit Guess"):
                 st.error(f"❌ Oops! The number was {st.session_state.number_to_guess}. Better luck next time! 🎭")
                 st.session_state.number_to_guess = random.randint(50, 100)  # Reset game
                 st.session_state.guess_counter = 0
+                st.session_state.guess_list = []
     else:
         st.warning("⚠️ Please enter a valid number!")
+
+# Show Guess List Button
+if st.button("Show My Guesses"):
+    if st.session_state.guess_list:
+        st.write("📜 **Your Previous Guesses:**")
+        st.write(st.session_state.guess_list)
+    else:
+        st.write("🤷‍♂️ No guesses made yet!")
+
+
 
